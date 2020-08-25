@@ -1,18 +1,20 @@
-pi = Math.PI
-pi2 = pi*2
-pid2 = pi/2
+function flex(){
 
-dir = (p1,p2)=>{
+let pi = Math.PI
+let pi2 = pi*2
+let pid2 = pi/2
+
+let dir = (p1,p2)=>{
   return Math.atan2(p2.y-p1.y,p2.x-p1.x)
 }
-dist = (p1,p2)=>{
+let dist = (p1,p2)=>{
   return Math.hypot(p2.y-p1.y,p2.x-p1.x)
 }
 
-flex={}
-flex.quality = 10
+let flex={}
+flex.quality = 1
 
-class Point{
+flex.Point = class Point{
   constructor(x=0,y=0){
 	this.x = x
 	this.y = y
@@ -30,22 +32,22 @@ class Point{
 }
 
 
-class Brush{
+flex.Brush = class Brush{
   constructor(x,y){
 	this.x = x
 	this.y = y
 	this.path = []
-	this.path.push(new Point(x,y))
+	this.path.push(new flex.Point(x,y))
   }
   move(x,y){
 	this.x+=x
 	this.y+=y
-	this.path.push(new Point(this.x,this.y))
+	this.path.push(new flex.Point(this.x,this.y))
   }
   moveDistDir(dist,dir){
 	this.x+=dist*Math.cos(dir)
 	this.y+=dist*Math.sin(dir)
-	this.path.push(new Point(this.x,this.y))
+	this.path.push(new flex.Point(this.x,this.y))
   }
   moveTo(x,y){
 	this.x=x
@@ -75,37 +77,37 @@ ctx.lineTo(this.x+this.path[i].x,this.y+this.path[i].y)
   
   
   translateX(r=0){
-	this.path = this.path.map(p=>new Point(p.x+r,p.y))
+	this.path = this.path.map(p=>new flex.Point(p.x+r,p.y))
   },
   translateY(r=0){
-	this.path = this.path.map(p=>new Point(p.x,p.y+r))
+	this.path = this.path.map(p=>new flex.Point(p.x,p.y+r))
   },
   translate(rx,ry){
-	this.path = this.path.map(p=>new Point(p.x+rx,p.y+ry))
+	this.path = this.path.map(p=>new flex.Point(p.x+rx,p.y+ry))
   },
   sqewX(r){
 	let h = this.h||this.r2||this.r
 	if(this instanceof Star){
 	  h = this.r1>this.r2?this.r1:this.r2
 	}
-	this.path = this.path.map(p=>new Point(p.x+r*p.y/h,p.y))
+	this.path = this.path.map(p=>new flex.Point(p.x+r*p.y/h,p.y))
   },
   sqewY(r){
 	let w = this.w||this.r1||this.r
 	if(this instanceof Star){
 	  w = this.r1>this.r2?this.r1:this.r2
 	}
-	this.path = this.path.map(p=>new Point(p.x,p.y+r*p.x/w))
+	this.path = this.path.map(p=>new flex.Point(p.x,p.y+r*p.x/w))
   },
   rotate(d){
 	let Dir = 0
 	let Dist = 0
 
 	this.path = this.path.map(p=>{
-	  Dir = dir(new Point(0,0),new Point(p.x,p.y))
-	  Dist = dist(new Point(0,0),new Point(p.x,p.y))
+	  Dir = dir(new flex.Point(0,0),new flex.Point(p.x,p.y))
+	  Dist = dist(new flex.Point(0,0),new flex.Point(p.x,p.y))
 	  
-	  return new Point(Math.cos(Dir+d)*Dist,Math.sin(Dir+d)*Dist)
+	  return new flex.Point(Math.cos(Dir+d)*Dist,Math.sin(Dir+d)*Dist)
 	})
   },
   inflate(r=0,c=0){
@@ -115,11 +117,11 @@ ctx.lineTo(this.x+this.path[i].x,this.y+this.path[i].y)
 	
 	this.path = this.path.map(p=>{
 	
-	  Dir = dir(new Point(0,0),new Point(p.x,p.y))
-	  Dist = dist(new Point(0,0),new Point(p.x,p.y))
+	  Dir = dir(new Point(0,0),new flex.Point(p.x,p.y))
+	  Dist = dist(new Point(0,0),new flex.Point(p.x,p.y))
 	  R = c?r * (this.R/2/Dist):r
 	  
-	  return new Point(Math.cos(Dir)*(Dist+R),Math.sin(Dir)*(Dist+R))
+	  return new flex.Point(Math.cos(Dir)*(Dist+R),Math.sin(Dir)*(Dist+R))
 	})
   },
   twist(r){
@@ -129,30 +131,30 @@ ctx.lineTo(this.x+this.path[i].x,this.y+this.path[i].y)
 	
 	this.path = this.path.map(p=>{
 	
-	  Dir = dir(new Point(0,0),new Point(p.x,p.y))
-	  Dist = dist(new Point(0,0),new Point(p.x,p.y))
+	  Dir = dir(new Point(0,0),new flex.Point(p.x,p.y))
+	  Dist = dist(new Point(0,0),new flex.Point(p.x,p.y))
 	  
-	  return new Point(Math.cos((Dir)+R*Dist)*Dist,Math.sin((Dir)+R*Dist)*Dist)
+	  return new flex.Point(Math.cos((Dir)+R*Dist)*Dist,Math.sin((Dir)+R*Dist)*Dist)
 	})
   },
   scaleX(s){
-	this.path = this.path.map(p=>new Point(p.x*s,p.y))
+	this.path = this.path.map(p=>new flex.Point(p.x*s,p.y))
   },
   scaleY(s){
-	this.path = this.path.map(p=>new Point(p.x,p.y*s))
+	this.path = this.path.map(p=>new flex.Point(p.x,p.y*s))
   },
   scale(s){
-	this.path = this.path.map(p=>new Point(p.x*s,p.y*s))
+	this.path = this.path.map(p=>new flex.Point(p.x*s,p.y*s))
   },
   reset(){
-    this.build(flex.quality)
+	this.build(flex.quality)
   }
 }
 
 
 
 
-class Ellipse{
+flex.Ellipse = class Ellipse{
   constructor(x=0,y=0,r1=0,r2=0){
 	this.x = x
 	this.y = y
@@ -173,14 +175,14 @@ class Ellipse{
 	P = P<12?12:P
 	
 	for(let i = 0; i < P; i++){
-	  this.path.push(new Point(Math.cos(i/P*pi2)*this.r1,Math.sin(i/P*pi2)*this.r2))
+	  this.path.push(new flex.Point(Math.cos(i/P*pi2)*this.r1,Math.sin(i/P*pi2)*this.r2))
 	}
   }
 }
-Object.assign(Ellipse.prototype,Shape)
+Object.assign(flex.Ellipse.prototype,Shape)
 
 
-class Rect{
+flex.Rect = class Rect{
   constructor(x=0,y=0,w=0,h=0,r=0){
 	this.x = x
 	this.y = y
@@ -196,7 +198,7 @@ class Rect{
 	this.build(flex.quality)
   }
   build(q=1){
-	let b = new Brush(this.w/2,this.h/2)
+	let b = new flex.Brush(this.w/2,this.h/2)
 	let Px = Math.floor(this.w/q)
 	let Py = Math.floor(this.h/q)
 	Px = Px<3?3:Px
@@ -216,10 +218,10 @@ class Rect{
 	this.path = b.path
   }
 }
-Object.assign(Rect.prototype,Shape)
+Object.assign(flex.Rect.prototype,Shape)
 
 
-class Triangle{
+flex.Triangle = class Triangle{
   constructor(x,y,w,h){
 	this.x = x
 	this.y = y
@@ -233,8 +235,8 @@ class Triangle{
 	this.build(flex.quality)
   }
   build(q){
-	let b = new Brush(this.h/2,0)
-	let asside = dist(new Point(this.h/2,0),new Point(-this.h/2,this.w/2))
+	let b = new flex.Brush(this.h/2,0)
+	let asside = dist(new flex.Point(this.h/2,0),new flex.Point(-this.h/2,this.w/2))
 	let Pa = Math.floor(asside/q)
 	let Pb = Math.floor(this.w/q)
 	
@@ -242,23 +244,23 @@ class Triangle{
 	Pb = Pb<3?3:Pb
 	
 	for(let i = 0; i < Pa; i++){
-	  b.moveDistDir(asside/Pa,dir(new Point(this.h/2,0),new Point(-this.h/2,this.w/2)))
+	  b.moveDistDir(asside/Pa,dir(new flex.Point(this.h/2,0),new flex.Point(-this.h/2,this.w/2)))
 	}
 	for(let i = 0; i < Pb; i++){
 	  b.moveDistDir(this.w/Pb,-pid2)
 	}
 	for(let i = 0; i < Pa; i++){
-	  b.moveDistDir(asside/Pa,dir(new Point(-this.h/2,-this.w/2),new Point(this.h/2,0)))
+	  b.moveDistDir(asside/Pa,dir(new flex.Point(-this.h/2,-this.w/2),new flex.Point(this.h/2,0)))
 	}
 	
 	this.path = b.path
   }
 }
-Object.assign(Triangle.prototype,Shape)
+Object.assign(flex.Triangle.prototype,Shape)
 
 
 
-class Polygone{
+flex.Polygone = class Polygone{
   constructor(x,y,r,n){
 	this.x = x
 	this.y = y
@@ -272,24 +274,24 @@ class Polygone{
 	this.build(flex.quality)
   }
   build(q){
-	let b = new Brush(this.r,0)
+	let b = new flex.Brush(this.r,0)
 	let asside = this.r*Math.sin(pi/this.n)*2
 	let Pa = Math.floor(asside/q)
 	Pa = Pa<3?3:Pa
 	for(let i = 0; i < this.n; i++){
 	  for(let j = 0; j < Pa; j++){
 		b.moveDistDir(asside/Pa,dir(
-		new Point(this.r*Math.cos(i*pi2/this.n),this.r*Math.sin(i*pi2/this.n)),
-	   new Point(this.r*Math.cos((i+1)*pi2/this.n),this.r*Math.sin((i+1)*pi2/this.n))
+		new flex.Point(this.r*Math.cos(i*pi2/this.n),this.r*Math.sin(i*pi2/this.n)),
+	   new flex.Point(this.r*Math.cos((i+1)*pi2/this.n),this.r*Math.sin((i+1)*pi2/this.n))
 		))
 	  }
 	}
 	this.path = b.path
   }
 }
-Object.assign(Polygone.prototype,Shape)
+Object.assign(flex.Polygone.prototype,Shape)
 
-class Star{
+flex.Star = class Star{
   constructor(x,y,r1,r2,n){
 	this.x = x
 	this.y = y
@@ -305,26 +307,26 @@ class Star{
 	this.build(flex.quality)
   }
   build(q){
-	let b = new Brush(this.r1,0)
+	let b = new flex.Brush(this.r1,0)
 	let asside = dist(
-		new Point(this.r1*Math.cos(0*pi2/this.n),this.r1*Math.sin(0*pi2/this.n)),
-	   new Point(this.r2*Math.cos(0.5*pi2/this.n),this.r2*Math.sin(0.5*pi2/this.n)))
+		new flex.Point(this.r1*Math.cos(0*pi2/this.n),this.r1*Math.sin(0*pi2/this.n)),
+	   new flex.Point(this.r2*Math.cos(0.5*pi2/this.n),this.r2*Math.sin(0.5*pi2/this.n)))
 	let Pa = Math.floor(asside/q)
 	Pa = Pa<3?3:Pa
 	for(let i = 0; i < this.n; i++){
 	  for(let j = 0; j < Pa; j++){
 		b.moveDistDir(asside/Pa,
 		dir(
-		new Point(this.r1*Math.cos(i*pi2/this.n),this.r1*Math.sin(i*pi2/this.n)),
-	   new Point(this.r2*Math.cos((i+0.5)*pi2/this.n),this.r2*Math.sin((i+0.5)*pi2/this.n)))
+		new flex.Point(this.r1*Math.cos(i*pi2/this.n),this.r1*Math.sin(i*pi2/this.n)),
+	   new flex.Point(this.r2*Math.cos((i+0.5)*pi2/this.n),this.r2*Math.sin((i+0.5)*pi2/this.n)))
 	   )
 	  }
 	  for(let j = 0; j < Pa; j++){
 		b.moveDistDir(asside/Pa,
 		
 		dir(
-		new Point(this.r2*Math.cos((i+0.5)*pi2/this.n),this.r2*Math.sin((i+0.5)*pi2/this.n)),
-	   new Point(this.r1*Math.cos((i+1)*pi2/this.n),this.r1*Math.sin((i+1)*pi2/this.n))
+		new flex.Point(this.r2*Math.cos((i+0.5)*pi2/this.n),this.r2*Math.sin((i+0.5)*pi2/this.n)),
+	   new flex.Point(this.r1*Math.cos((i+1)*pi2/this.n),this.r1*Math.sin((i+1)*pi2/this.n))
 		)
 		
 		)
@@ -333,4 +335,8 @@ class Star{
 	this.path = b.path
   }
 }
-Object.assign(Star.prototype,Shape)
+Object.assign(flex.Star.prototype,Shape)
+
+return flex
+
+}
