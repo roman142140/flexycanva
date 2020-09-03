@@ -1,4 +1,4 @@
-function flex()
+flex = (function flex()
 {
   let pi = Math.PI,
     pi2 = pi * 2,
@@ -317,4 +317,4 @@ function flex()
   };
   Object.assign(flex.Star.prototype, Shape);
   return flex
-}
+})()
